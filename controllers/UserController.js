@@ -45,6 +45,18 @@ const UserController = {
         }
     },
 
+
+    async getCurrentUser(req, res) {
+        try {
+            const user = req.user;
+            res.status(200).json(user);
+        } catch (error) {
+            console.error('Error fetching current user:', error);
+            res.status(500).json({ message: 'Server error while fetching current user' });
+        }
+    },
+
+
     async logout(req, res) {
         try {
             const token = req.headers.authorization;
