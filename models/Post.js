@@ -11,11 +11,14 @@ const PostSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  comment: {
+  comments: {
     type: String,
     required: true,
     trim: true
   },
+  image: {
+    type: String,
+  }
 }, { timestamps: true });
 
 const Post = mongoose.model('Post', PostSchema);
