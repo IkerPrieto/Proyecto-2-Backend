@@ -15,7 +15,6 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
     "mongoose": "^8.15.2",
-    "node": "^24.2.0",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
