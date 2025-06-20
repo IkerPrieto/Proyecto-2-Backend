@@ -150,7 +150,43 @@ const PostController = {
             console.error('Error searching post by id', error);
             res.status(500).json({ message: 'Server error while searching post by id' });
         }
+    },
+
+    async like(req, res) {
+    try {
+        const post = await Post.findById(req.params._id);
+
+        if (!post) {
+            return res.status(404).send({ message: 'Post not found' });
+        }
+
+        const userId = req.user._id.toString();
+        const hasLiked = post.likes.some(id => id.toString() === userId);
+
+        let updatedPost;
+
+        if (hasLiked) {
+            // Quitar el like si ya existe
+            updatedPost = await Post.findByIdAndUpdate(
+                req.params._id,
+                { $pull: { likes: req.user._id } },
+                { new: true }
+            );
+        } else {
+            // Agregar el like si no existe
+            updatedPost = await Post.findByIdAndUpdate(
+                req.params._id,
+                { $push: { likes: req.user._id } },
+                { new: true }
+            );
+        }
+
+        res.send(updatedPost);
+    } catch (error) {
+        console.error('Error with like', error);
+        res.status(500).send({ message: 'There was a problem with your request' });
     }
+}
 };
 
 module.exports = PostController;

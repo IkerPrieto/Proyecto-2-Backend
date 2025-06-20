@@ -18,7 +18,8 @@ const PostSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-  }
+  },
+  likes: [{ type: mongoose.Schema.Types.ObjectId }],
 }, { timestamps: true });
 
 const Post = mongoose.model('Post', PostSchema);

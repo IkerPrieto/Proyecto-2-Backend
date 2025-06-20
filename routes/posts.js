@@ -9,5 +9,6 @@ router.delete('/id/:id', authentication, PostController.deletePost)
 router.get('/getAll', PostController.allPosts)
 router.get('/name/:name', PostController.getPostsByName)
 router.get('/id/:id', PostController.getPostById)
+router.put('/likes/:_id', authentication, PostController.like)
 
 module.exports = router
