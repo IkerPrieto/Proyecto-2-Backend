@@ -1,4 +1,4 @@
-# 🛒 Social Backend API with Node.js & MongoDB
+# Social Backend API with Node.js & MongoDB
 
 A REST API for a social platform built with Node.js and MongoDB. Features user authentication, post management and likes.
 
