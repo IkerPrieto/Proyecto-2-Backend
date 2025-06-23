@@ -16,6 +16,7 @@ const UserController = {
             const user = await User.create({ ...req.body, password: hashedPassword });
             res.status(201).send({ message: 'User created successfully', user });
         } catch (error) {
+            console.error('Error with register', error);
             res.status(500).send({ message: 'Error creating user', error });
         }
     },
@@ -39,8 +40,9 @@ const UserController = {
             user.tokens.push(token);
             await user.save();
 
-            res.send({ message: 'Login successful', token, user });
+            res.send({ message: 'Login successfully', token, user });
         } catch (error) {
+            console.error('Error while login', error);
             res.status(500).send({ message: 'Error while logging in', error });
         }
     },
@@ -51,7 +53,7 @@ const UserController = {
             res.status(200).json(user);
         } catch (error) {
             console.error('Error fetching current user:', error);
-            res.status(500).json({ message: 'Server error while fetching current user' });
+            res.status(500).json({ message: 'Server error while fetching current user', error });
         }
     },
 
@@ -63,14 +65,26 @@ const UserController = {
                 return res.status(401).send({ message: 'Token not given' });
             }
 
-            const deleted = await Token.destroy({ where: { token } });
+            const user = await User.findOne({tokens:token});
 
-            if (deleted) {
-                return res.send({ message: 'Session closed successfully' });
-            } else {
-                return res.status(400).send({ message: 'Token not founded or already destroyed' });
+            if(!user) {
+                return res.status(401).json({message: "User not found"});
             }
+
+            user.tokens = user.tokens.filter((t) => t !== token);
+            await user.save();
+
+            res.status(200).send({message: "Logout successfully"});
+
+            // const deleted = await token.destroy({ where: { token } });
+
+            // if (deleted) {
+            //     return res.send({ message: 'Session closed successfully' });
+            // } else {
+            //     return res.status(400).send({ message: 'Token not founded or already destroyed' });
+            // }
         } catch (error) {
+            console.error('Error while logout', error);
             res.status(500).send({ message: 'Error while loggout', error });
         }
     }

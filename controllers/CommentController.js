@@ -27,7 +27,7 @@ const CommentController = {
             res.status(201).json(savedComment);
         } catch (error) {
             console.error('Error creating comment:', error);
-            res.status(500).json({ message: 'Server error while creating comment' });
+            res.status(500).json({ message: 'Server error while creating comment', error });
         }
     }
 };

@@ -3,16 +3,16 @@ const Post = require('../models/Post');
 const PostController = {
     async createPost(req, res) {
         try {
-            const { image, title, comment } = req.body;
+            const { image, title, comments } = req.body;
 
-            if (!title || !comment) {
+            if (!title || !comments) {
                 return res.status(400).json({ message: 'Title and comment are required' });
             }
 
             const newPost = new Post({
                 image,
                 title,
-                comment,
+                comments,
                 user: req.user._id,
             });
 
@@ -21,14 +21,14 @@ const PostController = {
             res.status(201).json(savedPost);
         } catch (error) {
             console.error('Error creating post:', error);
-            res.status(500).json({ message: 'Server error while creating post' });
+            res.status(500).json({ message: 'Server error while creating post', error });
         }
     },
 
     async updatePost(req, res) {
         try {
             const { id } = req.params;
-            const { image, title, comment } = req.body;
+            const { image, title, comments } = req.body;
 
             const post = await Post.findById(id);
             if (!post) {
@@ -42,7 +42,7 @@ const PostController = {
             // Actualizar campos si fueron enviados
             if (image !== undefined) post.image = image;
             if (title !== undefined) post.title = title;
-            if (comment !== undefined) post.comments = comment;
+            if (comments !== undefined) post.comments = comments;
 
             const updatedPost = await post.save();
             res.status(200).json(updatedPost);
@@ -56,7 +56,8 @@ const PostController = {
         try {
             const { id } = req.params;
 
-            const post = await Post.findById(id);
+            const post = await Post.findByIdAndDelete(id);
+            
             if (!post) {
                 return res.status(404).json({ message: 'Post not found' });
             }
@@ -64,8 +65,6 @@ const PostController = {
             if (post.user.toString() !== req.user._id.toString()) {
                 return res.status(403).json({ message: 'Not authorized to delete this post' });
             }
-
-            await post.remove();
 
             res.status(200).json({ message: 'Post deleted successfully' });
         } catch (error) {
@@ -100,14 +99,17 @@ const PostController = {
 
     async getPostsByName(req, res) {
         try {
-            const { name } = req.query;
+            const { title } = req.params;
             const { page = 1, limit = 10 } = req.query;
 
-            if (!name) {
-                return res.status(400).json({ message: 'Post name is required' });
+            if (title === "") {
+                return res.status(400).json({ message: 'Post title is required' });
             }
 
-            const posts = await Post.find({ title: { $regex: name, $options: 'i' } })
+            console.log(title);
+            
+
+            const posts = await Post.find({ title: { $regex: title, $options: 'i' } })
                 .limit(limit)
                 .skip((page - 1) * limit)
                 .populate('user')
@@ -117,20 +119,20 @@ const PostController = {
                 });
 
             res.status(200).json({
-                message: 'Posts matching the name retrieved successfully',
+                message: 'Posts matching the title retrieved successfully',
                 posts
             });
         } catch (error) {
-            console.error('Error searching posts by name', error);
-            res.status(500).json({ message: 'Server error while searching posts by name' });
+            console.error('Error searching posts by title', error);
+            res.status(500).json({ message: 'Server error while searching posts by title', error });
         }
     },
 
     async getPostById(req, res) {
         try {
-            const { id } = req.query;
+            const { id } = req.params;
 
-            if (!id) {
+            if (id === "") {
                 return res.status(400).json({ message: 'Post id is required' });
             }
 
@@ -145,10 +147,10 @@ const PostController = {
                 return res.status(404).json({ message: 'Post not found' });
             }
 
-            res.status(200).json({ message: 'Post retrieved successfully', posts });
+            res.status(200).json({ message: 'Post retrieved successfully', post });
         } catch (error) {
             console.error('Error searching post by id', error);
-            res.status(500).json({ message: 'Server error while searching post by id' });
+            res.status(500).json({ message: 'Server error while searching post by id', error });
         }
     },
 
@@ -156,7 +158,7 @@ const PostController = {
     try {
         const post = await Post.findById(req.params._id);
 
-        if (!post) {
+        if (post === "") {
             return res.status(404).send({ message: 'Post not found' });
         }
 
@@ -184,7 +186,7 @@ const PostController = {
         res.send(updatedPost);
     } catch (error) {
         console.error('Error with like', error);
-        res.status(500).send({ message: 'There was a problem with your request' });
+        res.status(500).send({ message: 'There was a problem with your request', error });
     }
 }
 };
