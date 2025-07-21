@@ -76,13 +76,13 @@ const UserController = {
 
             res.status(200).send({message: "Logout successfully"});
 
-            // const deleted = await token.destroy({ where: { token } });
+            const deleted = await token.destroy({ where: { token } });
 
-            // if (deleted) {
-            //     return res.send({ message: 'Session closed successfully' });
-            // } else {
-            //     return res.status(400).send({ message: 'Token not founded or already destroyed' });
-            // }
+            if (deleted) {
+                return res.send({ message: 'Session closed successfully' });
+            } else {
+                return res.status(400).send({ message: 'Token not founded or already destroyed' });
+            }
         } catch (error) {
             console.error('Error while logout', error);
             res.status(500).send({ message: 'Error while loggout', error });
