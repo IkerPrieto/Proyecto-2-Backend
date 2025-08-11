@@ -12,11 +12,10 @@ const PostSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  comments: {
+  comments: [{
     type: ObjectId,
-    trim: true,
     ref: 'Comments'
-  },
+  }],
   image: {
     type: String,
   },
@@ -24,5 +23,4 @@ const PostSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const Post = mongoose.model('Post', PostSchema);
-
 module.exports = Post;

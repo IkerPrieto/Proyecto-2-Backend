@@ -24,6 +24,9 @@ const CommentController = {
 
             const savedComment = await newComment.save();
 
+            postExists.comments.push(savedComment._id);
+            await postExists.save();
+
             res.status(201).json(savedComment);
         } catch (error) {
             console.error('Error creating comment:', error);
