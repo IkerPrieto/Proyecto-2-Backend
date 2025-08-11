@@ -3,16 +3,16 @@ const Post = require('../models/Post');
 const PostController = {
     async createPost(req, res) {
         try {
-            const { image, title, comments } = req.body;
+            const { image, title } = req.body;
 
-            if (!title || !comments) {
-                return res.status(400).json({ message: 'Title and comment are required' });
+            if (!title) {
+                return res.status(400).json({ message: 'Title is required' });
             }
 
             const newPost = new Post({
                 image,
                 title,
-                comments,
+                comments: [],
                 user: req.user._id,
             });
 

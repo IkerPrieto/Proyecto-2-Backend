@@ -3,8 +3,11 @@ const app = express()
 const PORT = 3000
 const { dbConnection } = require('./config/config')
 const { typeError } = require('./middlewares/errors')
+const cors = require('cors')
 
 app.use(express.json())
+app.use(cors())
+
 
 dbConnection()
 
