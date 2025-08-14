@@ -12,6 +12,10 @@ const PostSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  description: {
+    type: String,
+    required: true
+  },
   comments: [{
     type: ObjectId,
     ref: 'Comments'
