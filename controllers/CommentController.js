@@ -5,19 +5,19 @@ const CommentController = {
     async createComment(req, res) {
         try {
             const { postId } = req.params;
-            const { text } = req.body;
+            const { description } = req.body;
 
             const postExists = await Post.findById(postId);
             if (!postExists) {
                 return res.status(404).json({ message: 'Post not found' });
             }
 
-            if (!text) {
-                return res.status(400).json({ message: 'Comment text is required' });
+            if (!description) {
+                return res.status(400).json({ message: 'Comment description is required' });
             }
 
             const newComment = new Comment({
-                text,
+                description,
                 post: postId,
                 user: req.user._id,
             });
