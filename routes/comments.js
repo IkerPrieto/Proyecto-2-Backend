@@ -3,6 +3,6 @@ const router = express.Router()
 const CommentController = require('../controllers/CommentController')
 const { authentication } = require('../middlewares/authentication')
 
-router.post('/posts/:postId/comments', authentication, CommentController.createComment)
+router.post('/posts/:postId', authentication, CommentController.createComment)
 
 module.exports = router
